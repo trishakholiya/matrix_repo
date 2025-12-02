@@ -36,4 +36,16 @@ public:
       return result;
   }
 
+  // transpose matrix
+  Matrix transpose() const {
+    Matrix result(num_cols, num_rows);
+
+    for (int i = 0; i < num_rows; i++) {
+        for (int j = 0; j < num_cols; j++) {
+            result.matrix[j][i] = matrix[i][j];
+        }
+    }
+
+    return result;
+}
 };

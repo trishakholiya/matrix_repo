@@ -25,6 +25,7 @@ int main(int argc, char* argv[]) {
     Matrix temp = mat2 + mat3;
   };
 
+  // initialize matrixes with same values in armadillo
   arma::mat A = { {1, 2},
                   {3, 4} };
 

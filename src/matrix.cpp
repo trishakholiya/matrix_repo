@@ -7,6 +7,9 @@
 typedef std::vector<double> vec;
 typedef std::vector<vec> mat;
 
+// Forward declarations of global result types
+struct TridiagonalResult;
+struct QREigenResult;
 
 class Matrix {
 private:
@@ -22,7 +25,6 @@ public:
 
   // empty constructor
   Matrix() : num_rows(0), num_cols(0), size(0) {}
-
 
   // constructor from FLAT vector
   Matrix(const vec& values, int rows, int cols)
@@ -43,10 +45,14 @@ public:
     }
   }
 
+  TridiagonalResult householder_tridiagonalize();
+  QREigenResult qr_eigen_tridiagonal();
+
+
   // equal to a matrix operator
   // overload print << operator
 
-
+  
   // overload addition operator
   inline Matrix operator+(const Matrix& other) const {
     // check if matrices are able to be added
@@ -92,15 +98,29 @@ public:
 
     return result;
   }
+};
 
-  Matrix householder_tridiagonalize() {
+struct TridiagonalResult {
+    Matrix T; // tridiagonal matrix
+    Matrix Q_house; // accumulated Householder transforms
+};
+
+struct QREigenResult {
+    std::vector<double> eigenvalues;
+    Matrix Q_qr; // accumulated QR transforms
+};
+
+inline TridiagonalResult Matrix::householder_tridiagonalize() {
+    TridiagonalResult result;
     // juliet implement
-  }
+    return result;
+}
 
-  std::vector<double> qr_eigen_tridiagonal() {
+inline QREigenResult Matrix::qr_eigen_tridiagonal() {
+    QREigenResult result;
     // trisha implement
-  }
-
+    return result;
+}
 
   /*
   std::pair<vec, mat> compute eigsym_decomposition() {
@@ -150,4 +170,4 @@ public:
     return result;
   }
   */
-};
+

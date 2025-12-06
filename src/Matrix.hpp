@@ -19,33 +19,68 @@ private:
   int num_rows;
   int num_cols;
   int size;
-  mat matrix;
-  vec data; // store flattened version of matrix for speed, MAYBE SHOULD CONSIDER ONLY STORING FLATTENED MATRIX
+  vec matrix;
 
 public:
   // initialize matrix of specific size with zeros
-  Matrix(int rows, int cols) : num_rows(rows), num_cols(cols), size(0), matrix(rows, vec(cols, 0.0)) {}
+  Matrix(int rows, int cols) : num_rows(rows), num_cols(cols), size(rows*cols), matrix(size, 0.0) {}
 
   // empty constructor
   Matrix() : num_rows(0), num_cols(0), size(0) {}
 
   // constructor from FLAT vector
   Matrix(const vec& values, int rows, int cols)
-    : num_rows(rows), num_cols(cols), size(num_rows*num_cols)
+    : num_rows(rows), 
+      num_cols(cols), 
+      size(rows*cols)
   {
     // make sure this matrix can be constructed
     if (values.size() != rows * cols) {
         throw InvalidMatrixSize("Flat vector size does not match requested matrix dimensions");
     }
 
-    matrix.resize(rows, vec(cols));
-    int idx = 0; // for indexing into vector
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            matrix[i][j] = values[idx];
-            idx++;
-        }
-    }
+    matrix = std::move(values);
+  }
+
+  // Accessors (getters)
+  double get_num_rows()
+  {
+    return this->num_rows;
+  }
+
+  double const get_num_rows() const
+  {
+    return this->num_rows;
+  }
+
+  double get_num_cols()
+  {
+    return this->num_cols;
+  }
+
+  double const get_num_cols() const
+  {
+    return this->num_cols;
+  }
+
+  double get_size()
+  {
+    return this->size;
+  }
+
+  double const get_size() const
+  {
+    return this->size;
+  }
+
+  // operator to access the matrix so you can call matrix(1, 1)
+  inline double& operator()(int x, int y) {
+    return matrix[x * num_cols + y];
+  }
+
+  // operator to access the matrix so you can call matrix(1, 1)
+  inline const double& operator()(int x, int y) const {
+    return matrix[x * num_cols + y];
   }
 
   TridiagonalResult householder_tridiagonalize(bool yesvecs = true) const;
@@ -53,36 +88,24 @@ public:
   EigsymResult eigsym() const;
 
   // equal to a matrix operator
-  // overload print << operator
 
   // overload addition operator
   inline Matrix operator+(const Matrix& other) const {
-    // check if matrices are able to be added
-    if (this->num_cols != other.num_cols || this->num_rows != other.num_rows) {
-      throw InvalidMatrixSize("Matrix sizes must be equivalent for summation");
+    vec result(size);
+
+    const double* m1 = this->matrix.data();
+    const double* m2 = other.matrix.data();
+    double* r = result.data();
+
+    for ( int i = 0; i < this->size ; i++ ) {
+      r[i] = m1[i] + m2[i];
     }
 
-    Matrix result(num_rows, num_cols);
-
-    for (int i = 0; i < num_rows; i++) {
-        for (int j = 0; j < num_cols; j++) {
-            result.matrix[i][j] = matrix[i][j] + other.matrix[i][j];
-        }
-    }
-      
-    return result;
+    return Matrix(result, num_rows, num_cols);
   }
 
-  void print() const {
-    for (int i = 0; i < num_rows; i++) {
-        for (int j = 0; j < num_cols; j++) {
-            std::cout << matrix[i][j] << "  "; // need to figure out spacing between numbers
-        }
-        std::cout << "\n"; // line between rows
-    }
-    std::cout << "\n";
-  }
 
+/*
   double L2_norm() {
     // need to implement this for benchmarking
     return 0.0;
@@ -309,4 +332,18 @@ inline EigsymResult Matrix::eigsym() const {
     return result;
 }
 
+*/
+};
 
+// overload print << operator
+std::ostream& operator<<(std::ostream& out, const Matrix & M) {
+  out << "\n";
+  for (int i = 0; i < M.get_num_rows(); i++) {
+      for (int j = 0; j < M.get_num_cols(); j++) {
+          out << M(i, j) << "  "; // need to figure out spacing between numbers
+      }
+      out << "\n"; // line between rows
+  }
+  out << "\n";
+  return out;
+}

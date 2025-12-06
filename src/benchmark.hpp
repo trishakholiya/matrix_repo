@@ -22,7 +22,7 @@ long benchmark_time(T func, int iterations=25) {
   for (double val : vec_diff) {
       avg += val;
   }
-  // return time diff in microseconds
+  // return time diff in nanoseconds
   return avg / vec_diff.size();
 }
 

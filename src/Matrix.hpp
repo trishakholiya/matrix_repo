@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <limits>
 #include "custom_exception.hpp"
 #include "helper_func.hpp" // numerical recipes helper functions
 
@@ -47,9 +48,30 @@ public:
         }
     }
   }
+  
+  // USEFUL FOR TESTING
+  int rows() const { return num_rows; }
+  int cols() const { return num_cols; }
+  double at(int i, int j) const { return matrix[i][j]; }
+  
+  // optional but useful for testing:
+  Matrix operator-(const Matrix& other) const {
+    if (num_rows != other.num_rows || num_cols != other.num_cols) {
+        throw InvalidMatrixSize("Matrix sizes must match for subtraction");
+    }
+  Matrix result(num_rows, num_cols);
+  for (int i = 0; i < num_rows; ++i) {
+    for (int j = 0; j < num_cols; ++j) {
+        result.matrix[i][j] = matrix[i][j] - other.matrix[i][j];
+    }
+  }
+   return result; 
+  }
+  // END OF USEFUL FOR TESTING
+
 
   TridiagonalResult householder_tridiagonalize(bool yesvecs = true) const;
-  QREigenResult QL(std::vector<double> d, std::vector<double> e) const;
+  QLEigenResult QL(std::vector<double> d, std::vector<double> e) const;
   EigsymResult eigsym() const;
 
   // equal to a matrix operator
@@ -83,6 +105,9 @@ public:
     std::cout << "\n";
   }
 
+  // declaration of matrix multiplication operator (defined below class)
+  Matrix operator*(const Matrix& other) const;
+
   double L2_norm() {
     // need to implement this for benchmarking
     return 0.0;
@@ -101,6 +126,26 @@ public:
     return result;
   }
 };
+
+inline Matrix Matrix::operator*(const Matrix& other) const {
+    if (this->num_cols != other.num_rows) {
+        throw InvalidMatrixSize("Matrix dimensions incompatible for multiplication");
+    }
+
+    Matrix result(this->num_rows, other.num_cols);
+
+    for (int i = 0; i < this->num_rows; ++i) {
+        for (int j = 0; j < other.num_cols; ++j) {
+            double sum = 0.0;
+            for (int k = 0; k < this->num_cols; ++k) {
+                sum += this->matrix[i][k] * other.matrix[k][j];
+            }
+            result.matrix[i][j] = sum;
+        }
+    }
+
+    return result;
+}
 
 struct TridiagonalResult { 
     std::vector<double> d; // diagonal elements
@@ -299,9 +344,9 @@ inline EigsymResult Matrix::eigsym() const {
     
     TridiagonalResult tri = householder_tridiagonalize(true);
 
-    QREigenResult qr = QL(tri.d, tri.e);
+    QLEigenResult qr = QL(tri.d, tri.e);
 
-    Matrix P = tri.Q_house * qr.Q_qr;
+    Matrix P = tri.Q_house * qr.Q_ql;
 
     result.eigenvalues = qr.eigenvalues;
     result.eigenvectors = P;

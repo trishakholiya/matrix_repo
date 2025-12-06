@@ -46,7 +46,7 @@ public:
     }
   }
 
-  TridiagonalResult householder_tridiagonalize();
+  TridiagonalResult householder_tridiagonalize(bool yesvecs = true);
   QREigenResult QL(std::vector<double> d, std::vector<double> e);
 
   // equal to a matrix operator
@@ -100,7 +100,8 @@ public:
 };
 
 struct TridiagonalResult { 
-    Matrix T; // tridiagonal matrix
+    std::vector<double> d; // diagonal elements
+    std::vector<double> e; // off-diagonal
     Matrix Q_house; // accumulated Householder transforms
 };
 
@@ -109,20 +110,22 @@ struct QREigenResult {
     Matrix Q_qr; // accumulated QR transforms
 };
 
-inline TridiagonalResult Matrix::householder_tridiagonalize() {
+inline TridiagonalResult Matrix::householder_tridiagonalize(bool yesvecs = true) {
     TridiagonalResult result;
     // juliet implement
     int l, k, j, i;
     int n = num_rows;
+    mat z = matrix;
+    vec e(n), d(n);
     double scale, hh, h, g, f;
     for (i = n - 1; i > 0; i--) {
       l = i - 1;
       h = scale = 0.0;
       if (l > 0) {
         for (k = 0; k < i; k++)
-          scale += abs(matrix[i][k]);
+          scale += abs(z[i][k]);
         if (scale == 0.0)
-          e[i] = matrix[i][l];
+          e[i] = z[i][l];
         else {
           for (k = 0; k < i; k++) {
             z[i][k] /= scale;
@@ -157,7 +160,7 @@ inline TridiagonalResult Matrix::householder_tridiagonalize() {
           e[i] = z[i][l];
         d[i] = h;
     }
-    if (yesvec)
+    if (yesvecs)
       d[0] = 0.0;
     e[0] = 0.0;
     for (i = 0; i < n; i++) {
@@ -166,7 +169,7 @@ inline TridiagonalResult Matrix::householder_tridiagonalize() {
           for (j = 0; j < i; j++) {
             g = 0.0;
             for (k = 0; k < i; k++) 
-              g += z[i][k] * z[k][l];
+              g += z[i][k] * z[k][j];
             for (k = 0; k < i; k++)
               z[k][j] -= g * z[k][i];
           }
@@ -176,11 +179,28 @@ inline TridiagonalResult Matrix::householder_tridiagonalize() {
         z[i][i] = 1.0;
         for (j = 0; j < i; j++)
           z[j][i] = z[i][j] = 0.0;
+
       } else {
         d[i] = z[i][i];
       }        
     }
-}
+
+    if (yesvecs) {
+      // flatten z for now to construct matrix
+      vec flatZ;
+      flatZ.reserve(n * n);
+
+        for (int r = 0; r < n; r++) {
+          for (int c = 0; c < n; c++) {
+            flatZ.push_back(z[r][c]);
+          }
+        }
+      result.Q_house = Matrix(flatZ, n, n);
+    }
+
+    result.d = d;
+    result.e = e;
+
     return result;
 }
 

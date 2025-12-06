@@ -10,7 +10,7 @@ typedef std::vector<vec> mat;
 
 // Forward declarations of global result types
 struct TridiagonalResult;
-struct QREigenResult;
+struct QLEigenResult;
 
 class Matrix {
 private:
@@ -105,9 +105,9 @@ struct TridiagonalResult {
     Matrix Q_house; // accumulated Householder transforms
 };
 
-struct QREigenResult {
+struct QLEigenResult {
     std::vector<double> eigenvalues;
-    Matrix Q_qr; // accumulated QR transforms
+    Matrix Q_ql; // accumulated QR transforms
 };
 
 inline TridiagonalResult Matrix::householder_tridiagonalize(bool yesvecs) {
@@ -204,8 +204,8 @@ inline TridiagonalResult Matrix::householder_tridiagonalize(bool yesvecs) {
     return result;
 }
 
-inline QREigenResult Matrix::QL(std::vector<double> d, std::vector<double> e) {
-  QREigenResult result;
+inline QLEigenResult Matrix::QL(std::vector<double> d, std::vector<double> e) {
+  QLEigenResult result;
   int n = d.size();
   int m, l, iter, i, k;
   double s, r, p, g, f, dd, c, b;
@@ -282,7 +282,7 @@ inline QREigenResult Matrix::QL(std::vector<double> d, std::vector<double> e) {
       }
   }
   result.eigenvalues = d;
-  result.Q_qr = Matrix(flatZ, n, n);
+  result.Q_ql = Matrix(flatZ, n, n);
   return result;
 }
 

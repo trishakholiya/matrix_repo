@@ -77,16 +77,23 @@ Matrix Matrix::operator*(const Matrix& other) const {
   if (this->num_cols != other.num_rows) {
       throw InvalidMatrixSize("Matrix dimensions incompatible for multiplication");
   }
+  int rows = this->num_rows;
+  int cols = other.num_cols;
+  int my_cols = this->num_cols;
 
-  Matrix result = Matrix::Zeros(this->num_rows, other.num_cols);
+  Matrix result(rows, cols);
 
-  for (int i = 0; i < this->num_rows; ++i) {
-      for (int j = 0; j < other.num_cols; ++j) {
+  const double* m1 = this->matrix.data();
+  const double* m2 = other.matrix.data();
+  double* r = result.matrix.data();
+
+  for (int i = 0; i < rows; ++i) {
+      for (int j = 0; j < cols; ++j) {
           double sum = 0.0;
-          for (int k = 0; k < this->num_cols; ++k) {
-              sum += (*this)(i, k) * other(k, j);
+          for (int k = 0; k < my_cols; ++k) {
+              sum += m1[i * my_cols + k] * m2[k * cols + j];
           }
-          result(i, j) = sum;
+          r[i * cols + j] = sum;
       }
   }
 

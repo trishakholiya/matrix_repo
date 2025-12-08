@@ -1,6 +1,6 @@
 #include <armadillo>
 #include "benchmark.hpp"
-#include "Matrix.hpp"
+#include "Matrix.h"
 #include <vector>
 #include "naive_matrix.hpp"
 

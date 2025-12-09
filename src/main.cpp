@@ -116,6 +116,10 @@ int main(int argc, char* argv[]) {
   Matrix mat4 = mat2 + mat3;
   std::cout << "Matrix 4: " << mat4 << std::endl;
 
+  //multiply matrixes
+  Matrix mat5 = mat2 * mat3;
+  std::cout << "Matrix 5: " << mat5 << std::endl;
+
   // benchmark the time
   auto matrix_sum_func = [&]() {
     Matrix temp = mat2 + mat3;

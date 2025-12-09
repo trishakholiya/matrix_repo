@@ -30,6 +30,7 @@ target_sources(
           src/matrix_operators.cpp
           src/matrix_eigendecomp.cpp
           src/helper_func.cpp
+          src/print_vec.cpp
 )
 
 target_include_directories(

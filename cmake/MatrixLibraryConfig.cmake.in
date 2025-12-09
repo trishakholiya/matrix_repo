@@ -1,0 +1,15 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# Dependencies
+find_dependency(Eigen3 3.4 REQUIRED)
+find_dependency(Armadillo REQUIRED)
+find_dependency(nlohmann_json REQUIRED)
+find_dependency(BLAS REQUIRED)
+find_dependency(LAPACK REQUIRED)
+
+# Load the exported targets for MatrixLibrary
+include("${CMAKE_CURRENT_LIST_DIR}/MatrixLibraryTargets.cmake")
+
+check_required_components(MatrixLibrary)

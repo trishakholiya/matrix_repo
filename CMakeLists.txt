@@ -21,6 +21,8 @@ find_package(Threads REQUIRED) # for google benchmarking
 # Library
 add_library(MatrixLibrary)
 
+add_library(MatrixLibrary::MatrixLibrary ALIAS MatrixLibrary)
+
 target_sources(
   MatrixLibrary
   PRIVATE src/matrix_utilfuncs.cpp

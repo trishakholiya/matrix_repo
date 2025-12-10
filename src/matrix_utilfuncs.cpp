@@ -50,23 +50,34 @@ void Matrix::save_hdf5(const Matrix& data,
                         const std::string& filename,
                        const std::string& dataset_name)
 {
+  int rows = data.get_num_rows();
+  int cols = data.get_num_cols();
+
   // get file, might need to create it
   HighFive::File file(filename, HighFive::File::ReadWrite | HighFive::File::Create);
 
   // need to use hsize_t type from HDF5
   std::vector<hsize_t> dimensions = { 
-      static_cast<hsize_t>(data.get_num_rows()),
-      static_cast<hsize_t>(data.get_num_cols())
+      static_cast<hsize_t>(rows),
+      static_cast<hsize_t>(cols)
   };
+
+  // Convert flat to 2D
+  std::vector<vec> reshaped(rows, vec(cols));
+    const vec& flat = data.get_data();
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            reshaped[i][j] = flat[i * cols + j];
+        }
+    }
 
   // Create dataset
   HighFive::DataSet dataset = file.createDataSet<double>(
-    dataset_name,
-    HighFive::DataSpace(dimensions)
-  );
+      dataset_name,
+      HighFive::DataSpace({rows, cols}));
 
-  // add matrix data to the dataset
-  dataset.write(data.get_data());
+    // add matrix data to the dataset
+  dataset.write(reshaped);
 }
 
 void Matrix::save_hdf5(const vec& data, 

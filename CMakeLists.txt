@@ -16,6 +16,7 @@ find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
 find_package(Threads REQUIRED) # for google benchmarking
+find_package(HDF5 REQUIRED COMPONENTS C CXX)
 #find_package(chemfiles REQUIRED)
 
 # Library
@@ -38,20 +39,34 @@ target_include_directories(
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 			$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
-target_link_libraries(MatrixLibrary PUBLIC
+find_package(HighFive REQUIRED)
+
+target_include_directories(MatrixLibrary PUBLIC ${HDF5_INCLUDE_DIRS})
+
+target_link_libraries(MatrixLibrary 
+  PUBLIC
     Eigen3::Eigen
     armadillo
     nlohmann_json::nlohmann_json
     #chemfiles
     BLAS::BLAS
     LAPACK::LAPACK
+    HighFive::HighFive
+    ${HDF5_C_LIBRARIES}
+    ${HDF5_CXX_LIBRARIES}
 )
 
 add_compile_options(-Wa,--gsframe=no) # suppresses a useless warning on x86 machines
 
 # executables
 add_executable(main src/main.cpp) # need to remove for actual library when we're done testing
-target_link_libraries(main PRIVATE MatrixLibrary)
+target_link_libraries(main 
+  PRIVATE 
+    MatrixLibrary
+    HighFive::HighFive 
+    ${HDF5_C_LIBRARIES} 
+    ${HDF5_CXX_LIBRARIES}
+)
 
 # Google Test
 include(FetchContent)
@@ -129,5 +144,5 @@ write_basic_package_version_file(
 install(
 	FILES ${CMAKE_CURRENT_BINARY_DIR}/MatrixLibraryConfig.cmake
 				${CMAKE_CURRENT_BINARY_DIR}/MatrixLibraryConfigVersion.cmake
-	DESTINATION ${CMAKE_INSTALLL_DATAROOTDIR}/cmake/MatrixLibrary
+	DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/cmake/MatrixLibrary
 )

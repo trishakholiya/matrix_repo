@@ -59,6 +59,11 @@ public:
   TridiagonalResult householder_tridiagonalize(bool yesvecs = true) const;
   QLEigenResult QL(vec d, vec e) const;
   EigsymResult eigsym() const;
+
+  // saving
+  static void save_hdf5(const Matrix& data, const std::string& filename, const std::string& dataset_name);
+  static void save_hdf5(const vec& data, const std::string& filename, const std::string& dataset_name);
+
 };
 
 // structs for eigen decomposition

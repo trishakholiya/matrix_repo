@@ -1,5 +1,7 @@
 #include "matrix.h"
 #include <cmath>
+#include <highfive/H5File.hpp>
+
 
 Matrix Matrix::diagmat(const vec& vector) {
   Matrix result = Matrix::Zeros(vector.size(), vector.size());
@@ -42,4 +44,49 @@ Matrix Matrix::transpose() const {
   }
 
   return result;
+}
+
+void Matrix::save_hdf5(const Matrix& data, 
+                        const std::string& filename,
+                       const std::string& dataset_name)
+{
+  // get file, might need to create it
+  HighFive::File file(filename, HighFive::File::ReadWrite | HighFive::File::Create);
+
+  // need to use hsize_t type from HDF5
+  std::vector<hsize_t> dimensions = { 
+      static_cast<hsize_t>(data.get_num_rows()),
+      static_cast<hsize_t>(data.get_num_cols())
+  };
+
+  // Create dataset
+  HighFive::DataSet dataset = file.createDataSet<double>(
+    dataset_name,
+    HighFive::DataSpace(dimensions)
+  );
+
+  // add matrix data to the dataset
+  dataset.write(data.get_data());
+}
+
+void Matrix::save_hdf5(const vec& data, 
+                        const std::string& filename,
+                        const std::string& dataset_name)
+{
+  // get file, might need to create it
+  HighFive::File file(filename, HighFive::File::ReadWrite | HighFive::File::Create);
+
+  // need to use hsize_t type from HDF5
+  std::vector<hsize_t> dimensions = {
+    static_cast<hsize_t>(data.size())
+    };
+
+  // Create dataset
+  HighFive::DataSet dataset = file.createDataSet<double>(
+    dataset_name,
+    HighFive::DataSpace(dimensions)
+  );
+
+  // add vec data to the dataset
+  dataset.write(data);
 }

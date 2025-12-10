@@ -1,6 +1,23 @@
 #include "matrix.h"
 #include <cmath>
 
+Matrix Matrix::diagmat(vec vector) const {
+  Matrix result = Matrix::Zeros(vector.size(), vector.size());
+  for (int i = 0; i < vector.size(); i++ ) {
+    result(i, i) = vector[i];
+  }
+  return result;
+}
+
+
+Matrix Matrix::diagmat(Matrix mat) const {
+  Matrix result = Matrix::Zeros(mat.get_num_rows(), mat.get_num_cols());
+  for (int i = 0; i < std::min(mat.get_num_rows(), mat.get_num_cols()); i++) {
+    result(i, i) = mat(i, i);
+  }
+  return result;
+}
+
 bool Matrix::is_symmetric(double tol = 1e-12) const {
   if (num_rows != num_cols)
       return false;

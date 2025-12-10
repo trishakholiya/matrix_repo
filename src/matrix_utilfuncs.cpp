@@ -1,7 +1,7 @@
 #include "matrix.h"
 #include <cmath>
 
-Matrix Matrix::diagmat(vec vector) const {
+Matrix Matrix::diagmat(vec vector) {
   Matrix result = Matrix::Zeros(vector.size(), vector.size());
   for (int i = 0; i < vector.size(); i++ ) {
     result(i, i) = vector[i];
@@ -10,7 +10,7 @@ Matrix Matrix::diagmat(vec vector) const {
 }
 
 
-Matrix Matrix::diagmat(Matrix mat) const {
+Matrix Matrix::diagmat(Matrix mat) {
   Matrix result = Matrix::Zeros(mat.get_num_rows(), mat.get_num_cols());
   for (int i = 0; i < std::min(mat.get_num_rows(), mat.get_num_cols()); i++) {
     result(i, i) = mat(i, i);

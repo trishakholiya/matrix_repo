@@ -52,8 +52,8 @@ public:
   Matrix operator*(double s) const;
 
   // linear algebra functions
-  static Matrix diagmat(vec vector);
-  static Matrix diagmat(Matrix mat);
+  Matrix diagmat(vec vector) const;
+  Matrix diagmat(Matrix mat) const;
   bool is_symmetric(double tol) const;
   Matrix transpose() const;
   TridiagonalResult householder_tridiagonalize(bool yesvecs = true) const;

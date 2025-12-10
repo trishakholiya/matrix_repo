@@ -2,7 +2,7 @@
 #include "matrix.h"
 #include <armadillo>
 
-static void BM_MatrixAccessor_MatrixClass(benchmark::State& state) {
+static void Accessor_MatrixClass(benchmark::State& state) {
   int n = state.range(0);
 
   Matrix A = Matrix::Zeros(n, n);
@@ -20,7 +20,7 @@ static void BM_MatrixAccessor_MatrixClass(benchmark::State& state) {
   state.SetItemsProcessed(state.iterations() * n * n);
 }
 
-static void BM_MatrixAccessor_Armadillo(benchmark::State& state) {
+static void Accessor_Armadillo(benchmark::State& state) {
   int n = state.range(0);
   arma::mat A = arma::zeros(n, n);
 
@@ -39,13 +39,13 @@ static void BM_MatrixAccessor_Armadillo(benchmark::State& state) {
 
 
 // benchmark for differenct sizes
-BENCHMARK(BM_MatrixAccessor_MatrixClass)
+BENCHMARK(Accessor_MatrixClass)
   ->Arg(10)
   ->Arg(100)
   ->Arg(200)
   ->Arg(400);
 
-BENCHMARK(BM_MatrixAccessor_Armadillo)
+BENCHMARK(Accessor_Armadillo)
   ->Arg(10)
   ->Arg(100)
   ->Arg(200)

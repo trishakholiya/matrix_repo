@@ -2,7 +2,7 @@
 #include "matrix.h"
 #include <armadillo>
 
-static void BM_MatrixInitializationZeros_MatrixClass(benchmark::State& state) {
+static void InitializationZeros_MatrixClass(benchmark::State& state) {
     int n = state.range(0);
 
     for (auto _ : state) {
@@ -13,7 +13,7 @@ static void BM_MatrixInitializationZeros_MatrixClass(benchmark::State& state) {
     state.SetItemsProcessed(state.iterations() * n * n);
 }
 
-static void BM_MatrixInitializationZeros_Armadillo(benchmark::State& state) {
+static void InitializationZeros_Armadillo(benchmark::State& state) {
     int n = state.range(0);
 
     for (auto _ : state) {
@@ -24,7 +24,7 @@ static void BM_MatrixInitializationZeros_Armadillo(benchmark::State& state) {
     state.SetItemsProcessed(state.iterations() * n * n);
 }
 
-static void BM_MatrixInitializationRandom_MatrixClass(benchmark::State& state) {
+static void InitializationRandom_MatrixClass(benchmark::State& state) {
     int n = state.range(0);
 
     for (auto _ : state) {
@@ -35,7 +35,7 @@ static void BM_MatrixInitializationRandom_MatrixClass(benchmark::State& state) {
     state.SetItemsProcessed(state.iterations() * n * n);
 }
 
-static void BM_MatrixInitializationRandom_Armadillo(benchmark::State& state) {
+static void InitializationRandom_Armadillo(benchmark::State& state) {
     int n = state.range(0);
 
     for (auto _ : state) {
@@ -47,25 +47,25 @@ static void BM_MatrixInitializationRandom_Armadillo(benchmark::State& state) {
 }
 
 // benchmark for differenct sizes
-BENCHMARK(BM_MatrixInitializationZeros_MatrixClass)
+BENCHMARK(InitializationZeros_MatrixClass)
   ->Arg(10)
   ->Arg(100)
   ->Arg(200)
   ->Arg(400);
 
-BENCHMARK(BM_MatrixInitializationZeros_Armadillo)
+BENCHMARK(InitializationZeros_Armadillo)
   ->Arg(10)
   ->Arg(100)
   ->Arg(200)
   ->Arg(400);
 
-BENCHMARK(BM_MatrixInitializationRandom_MatrixClass)
+BENCHMARK(InitializationRandom_MatrixClass)
   ->Arg(10)
   ->Arg(100)
   ->Arg(200)
   ->Arg(400);
 
-BENCHMARK(BM_MatrixInitializationRandom_Armadillo)
+BENCHMARK(InitializationRandom_Armadillo)
   ->Arg(10)
   ->Arg(100)
   ->Arg(200)

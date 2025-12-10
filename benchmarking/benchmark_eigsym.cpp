@@ -2,7 +2,7 @@
 #include "matrix.h"
 #include <armadillo>
 
-static void BM_MatrixEigSym_MatrixClass(benchmark::State& state) {
+static void EigSym_MatrixClass(benchmark::State& state) {
   int n = state.range(0);
   Matrix B = Matrix::Random(n, n);
   Matrix A = B + B.transpose(); // needs to be symmetric
@@ -15,7 +15,7 @@ static void BM_MatrixEigSym_MatrixClass(benchmark::State& state) {
   state.SetItemsProcessed(state.iterations() * n * n);
 }
 
-static void BM_MatrixEigSym_Armadillo(benchmark::State& state) {
+static void EigSym_Armadillo(benchmark::State& state) {
   int n = state.range(0);
   arma::mat B = arma::randu<arma::mat>(n, n);
   arma::mat A = B + B.t(); // needs to be symmetric
@@ -32,18 +32,14 @@ static void BM_MatrixEigSym_Armadillo(benchmark::State& state) {
 }
 
 // benchmark for differenct sizes
-BENCHMARK(BM_MatrixEigSym_MatrixClass)
-  ->Arg(4)
+BENCHMARK(EigSym_MatrixClass)
   ->Arg(10)
   ->Arg(100)
   ->Arg(200)
-  ->Arg(400)
-  ->Arg(800);
+  ->Arg(400);
 
-BENCHMARK(BM_MatrixEigSym_Armadillo)
-  ->Arg(4)
+BENCHMARK(EigSym_Armadillo)
   ->Arg(10)
   ->Arg(100)
   ->Arg(200)
-  ->Arg(400)
-  ->Arg(800);
+  ->Arg(400);

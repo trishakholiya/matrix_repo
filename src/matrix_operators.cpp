@@ -88,15 +88,13 @@ Matrix Matrix::operator*(const Matrix& other) const {
   double* r = result.matrix.data();
 
   for (int i = 0; i < rows; ++i) {
-      for (int j = 0; j < cols; ++j) {
-          double sum = 0.0;
-          for (int k = 0; k < my_cols; ++k) {
-              sum += m1[i * my_cols + k] * m2[k * cols + j];
-          }
-          r[i * cols + j] = sum;
-      }
+    for (int k = 0; k < my_cols; ++k) {
+        double a = m1[i * my_cols + k];
+        for (int j = 0; j < cols; ++j) {
+            r[i * cols + j] += a * m2[k * cols + j];
+        }
+    }
   }
-
   return result;
 }
 

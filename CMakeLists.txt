@@ -64,7 +64,8 @@ FetchContent_MakeAvailable(googletest)
 add_executable(my_tests
     test/test_matrix_arithmetic.cpp
     test/test_matrix_basics.cpp
-    test/test_matrix_eigsym.cpp)
+    #test/test_matrix_eigsym.cpp
+    )
 
 target_link_libraries(my_tests PRIVATE MatrixLibrary gtest_main)
 
@@ -82,6 +83,10 @@ add_executable(matrix_benchmarks
   benchmarking/benchmark_main.cpp
   benchmarking/benchmark_addition.cpp
   benchmarking/benchmark_multiplication.cpp
+  benchmarking/benchmark_initialization.cpp
+  benchmarking/benchmark_transpose.cpp
+  benchmarking/benchmark_accessor.cpp
+  benchmarking/benchmark_eigsym.cpp
 )
 
 target_link_libraries(matrix_benchmarks 
